@@ -1,0 +1,72 @@
+menu "ESP32-specific config"
+
+choice ESP32_DEFAULT_CPU_FREQ_MHZ
+    prompt "CPU frequency"
+    default ESP32_DEFAULT_CPU_FREQ_240
+    help
+        CPU frequency to be set on application startup.
+
+config ESP32_DEFAULT_CPU_FREQ_80
+    bool "80 MHz"
+config ESP32_DEFAULT_CPU_FREQ_160
+    bool "160 MHz"
+config ESP32_DEFAULT_CPU_FREQ_240
+    bool "240 MHz"
+endchoice
+
+config ESP32_DEFAULT_CPU_FREQ_MHZ
+    int
+    default 80 if ESP32_DEFAULT_CPU_FREQ_80
+    default 160 if ESP32_DEFAULT_CPU_FREQ_160
+    default 240 if ESP32_DEFAULT_CPU_FREQ_240
+
+config WIFI_ENABLED
+    bool "Enable low-level WiFi stack"
+    default "y"
+    help
+        This compiles in the low-level WiFi stack.
+
+		Temporarily, this option requires that FreeRTOS runs in single core mode.
+
+config WIFI_AUTO_STARTUP
+    bool "Start WiFi with system startup"
+    default "y"
+    depends on WIFI_ENABLED
+    help
+        By default, WiFi is started with system startup, you can turn off this
+        feature and start by yourself.
+
+config WIFI_AUTO_CONNECT
+    bool "Enable auto connect"
+    default "y"
+    depends on WIFI_ENABLED
+    help
+        If station is enabled, and station config is set, this will enable WiFi
+        station auto connect when WiFi startup.
+
+config SYSTEM_EVENT_QUEUE_SIZE
+    int "system event queue size"
+    default 32
+    depends on WIFI_ENABLED
+    help
+        Config system event queue size in different application.
+
+config SYSTEM_EVENT_TASK_STACK_SIZE
+    int "system event task stack size"
+    default 2048
+    depends on WIFI_ENABLED
+    help
+        Config system event task stack size in different application.
+
+
+config NEWLIB_STDOUT_ADDCR
+	bool "Standard-out output adds carriage return before newline"
+	default y
+	help
+		Most people are used to end their printf strings with a newline. If this
+		is sent as is to the serial port, most terminal programs will only move the
+		cursor one line down, not also move it to the beginning of the line. This
+		is usually done by an added CR character. Enabling this will make the
+		standard output code automatically add a CR character before a LF.
+
+endmenu
